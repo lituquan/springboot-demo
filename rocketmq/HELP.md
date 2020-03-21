@@ -11,6 +11,10 @@ Ui:
     编译可能会报错：pom.xml 里面的maven-checkstyle-plugin 插件去掉。
     端口修改成8081,避免跟应用冲突。
 
+参考：
+    https://www.cnblogs.com/coder-lzh/p/9006048.html
+    https://www.cnblogs.com/qdhxhz/p/11109696.html
+
 ### pom.xml
     <dependency>
         <groupId>org.apache.rocketmq</groupId>
@@ -18,6 +22,8 @@ Ui:
         <version>${rocketmq.version}</version>
     </dependency>   
     注意：版本和使用的rocketmq服务版本要一致,否则在自动创建topic到时候会失败。
+### 配置
+    rocketmq.namesrvAddr=127.0.0.1:9876
 
 ### ui和页面
     http://localhost:8081/#/consumer ==>Ui地址
