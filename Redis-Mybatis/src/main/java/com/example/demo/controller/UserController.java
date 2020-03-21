@@ -22,6 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    //地址：http://localhost:8080/query?id=1
     @GetMapping("/query")
     public Object queryById(int id){
         return userService.getUser(id);
