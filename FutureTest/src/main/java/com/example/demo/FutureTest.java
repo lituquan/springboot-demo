@@ -10,6 +10,41 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 public class FutureTest {
+    public static void extendThread() {
+
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                System.out.println("extendThread thread");
+            }
+        };
+        t.start();// 会调用本地方法生成线程
+        // t.run();//普通方法调用,不会生成线程
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static void implRunnable() {
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("implRunnable thread");
+            }
+        });
+        t.start();// 会调用本地方法生成线程
+        // t.run();//普通方法调用,不会生成线程
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     public static void futureAndCallable() {
         // callable
         final Callable<Long> call = new MyCall();
@@ -34,11 +69,9 @@ public class FutureTest {
     public static void futureAndComplete() {
         // callable
         final Callable<Long> call = new MyCall();
-        // 获取处理器核数
-        final int poolSize = Runtime.getRuntime().availableProcessors();
-        System.out.println("futureAndCallable:" + poolSize);
-
+    
         // 线程池
+        int poolSize=1;
         final ExecutorService exec = Executors.newFixedThreadPool(poolSize);
         CompletionService<Long> completionService = new ExecutorCompletionService<>(exec);
 
@@ -52,11 +85,9 @@ public class FutureTest {
             e.printStackTrace();
         }
     }
-
-    public static void futureTaskAndThread() {
-
-        final MyTask task = new MyTask(new MyCall());
-        final Thread t = new Thread(task);
+    public static void futureTaskAndThread(){
+        MyTask task = new MyTask(new MyCall());
+        Thread t = new Thread(task);
         t.start();
 
         try {
@@ -68,7 +99,28 @@ public class FutureTest {
         }
 
     }
+    public static void futureTaskRunnableAndThread() {
+        final Result r = new Result();
+        FutureTask<Result> fib30 = new FutureTask<>(
+            new Runnable() {
+            @Override
+            public void run() {
+                //r 是外部final對象,且有字段作為,r相當於容器
+                r.result = System.currentTimeMillis();
+            }
+        
+        }
+        , r);
+        try {
+            Thread.sleep(5000);
+            System.out.printf("第30個費式數:%d%n", fib30.get().result);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }        
+    }
     public static void main(final String[] args) {
+        implRunnable();
+        extendThread();
         futureAndCallable();
         futureAndComplete();
         futureTaskAndThread();
@@ -85,13 +137,18 @@ class MyCall implements Callable<Long> {
 
 class MyTask extends FutureTask<Long> {
 
-    public MyTask(final Runnable runnable, final Long result) {
+    public MyTask( Runnable runnable,  Long result) {
         super(runnable, result);
         // TODO Auto-generated constructor stub
     }
-    public MyTask(final Callable runnable) {
+    public MyTask( Callable runnable) {
         super(runnable);
         // TODO Auto-generated constructor stub
     }
   
+}
+
+
+class Result {
+    public long result;
 }
