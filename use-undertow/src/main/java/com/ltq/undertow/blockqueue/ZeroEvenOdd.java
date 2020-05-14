@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.IntConsumer;
 
+
 public class ZeroEvenOdd {
     private int n;
     public ZeroEvenOdd(int n) {
@@ -16,38 +17,40 @@ public class ZeroEvenOdd {
     public void zero(IntConsumer printNumber) throws InterruptedException {
         for(int i=1;i<=n;i++){
             printNumber.accept(0);
-            if((i&1)==0){
+            if((i&1)==1){
                 q1.put(i);
             }else{
                 q2.put(i);
             }
             q0.take();
         }
+        q1.put(-1);
+        q2.put(-1);
     }
 
     public void even(IntConsumer printNumber) throws InterruptedException {
         for(;;){
             int result=q2.take();
+            if(result==-1){
+            	break;
+            }
             printNumber.accept(result);
-            q0.put(result);
-            if(result+1>=n){
-                break;
-            }            
+            q0.put(result);                   
         }
     }
 
     public void odd(IntConsumer printNumber) throws InterruptedException {
          for(;;){
             int result=q1.take();
+            if(result==-1){
+            	break;
+            }
             printNumber.accept(result);
             q0.put(result);
-            if(result+1>=n){
-                break;
-            }
         }
     }
     public static void main(String[] args) {
-    	ZeroEvenOdd z=new ZeroEvenOdd(10);    	
+    	ZeroEvenOdd z=new ZeroEvenOdd(1);    	
 		Thread t1=new ZeroThread(z);
 		Thread t2=new EventThread(z);
 		Thread t3=new OddThread(z);
