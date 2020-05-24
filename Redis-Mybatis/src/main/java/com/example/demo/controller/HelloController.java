@@ -6,12 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.ltq.undertow.beanpost.HelloService;
+
 @Controller
 public class HelloController {
+	@Reference
+	HelloService helloService;
+	
     @ResponseBody
     @GetMapping(path = "/hello")
     public String hello() {
         return "hello world!";
+    }
+    @ResponseBody
+    @GetMapping(path = "/consumer")
+    public String comsumerHello() {
+        return helloService.hello();
     }
 
     @GetMapping("/greeting")

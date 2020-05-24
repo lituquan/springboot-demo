@@ -116,3 +116,10 @@
         </dependency>
     (2)配置类
         SwaggerConfig.java 
+### dubbo
+	https://www.cnblogs.com/baijinqiang/p/10848259.html
+	服务发布
+	接口+服务实现+spring装配+服务暴露+服务注册zk
+
+	服务消费
+	接口+zk+服务代理对象生成+服务调用
