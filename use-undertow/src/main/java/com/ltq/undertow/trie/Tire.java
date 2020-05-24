@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class Tire {
 	public String data;
+	public boolean isEnd;
 	public Map<String,  Tire> map;
 	
 	public Tire(String data) {
@@ -14,20 +15,22 @@ public class Tire {
 	}
 	//0-a-b-c
 	//0-a-d-c
-	public static void create(Tire root,String str,int index) {
+	public void create(String str,int index) {
 		if(str.length()<index) {
 			return;
 		}
 		String d=str.substring(0, index);
-		if(!root.map.containsKey(d)) {			
+		if(!this.map.containsKey(d)) {			
 			Tire tire=new Tire(d);
-			root.map.put(d, tire);	 
+			this.map.put(d, tire);
+			this.isEnd=(d.equals(str));
 		}
-		create(root.map.get(d),str,index+1);
+		Tire aTire=this.map.get(d);
+		aTire.create(str,index+1);
 	}
-	public static Tire search(Tire root,String pre) {
-		System.out.println(root.data);
+	public  Tire search(String pre) {
 
+		Tire root=this;
 		for(int i=1;i<=pre.length();i++) {
 			String key=pre.substring(0,i);
 			if(root.map.containsKey(key)) {
@@ -39,10 +42,12 @@ public class Tire {
 		}
 		return null;
 	}
-	public static void show(Tire root) {
-		System.out.println(root.data);
+	public  void show() {
+		Tire root=this;
+		
+		System.out.println(this.data+","+this.isEnd);
 		for(Tire k:root.map.values()) {			
-			show(k);
+			k.show();
 		}
 		if(root.map.size()==0) {
 			return;
@@ -53,10 +58,10 @@ public class Tire {
 		Tire root=new Tire("");
 		for (int i = 0; i < the.length; i++) {
 			String str=the[i];
-			Tire.create(root, str,1);
+			root.create( str,1);
 		}	
 //		show(root);
-		Tire search = Tire.search(root, "ab");
-		Tire.show(search);		
+		Tire search = root.search( "abc");
+		search.show();		
 	}
 }

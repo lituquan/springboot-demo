@@ -69,10 +69,10 @@ public class Heap {
         int lchild = 2 * parent + 1;
         int temp = mainArray[0];
         int rchild = lchild + 1;
-        while (lchild < len && rchild < len) {
-            int min = rchild;
-            if (mainArray[lchild] < mainArray[rchild]) {
-                min = lchild;
+        while (lchild < len ) {
+            int min = lchild;
+            if ( rchild < len && mainArray[lchild] >  mainArray[rchild]) {
+                min = rchild;
             }
             if (mainArray[min] < temp) {
                 mainArray[parent] = mainArray[min];
