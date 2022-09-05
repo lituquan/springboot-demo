@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Configuration
@@ -14,4 +15,5 @@ public class AppConfig {
     private String name;
     private Integer id;
     private List<User> list;
+    private Map<String,String> maps;
 }
