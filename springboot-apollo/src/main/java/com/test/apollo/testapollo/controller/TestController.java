@@ -1,5 +1,6 @@
 package com.test.apollo.testapollo.controller;
 
+import com.test.apollo.testapollo.annotation.LogHandle;
 import com.test.apollo.testapollo.config.AppConfig;
 import com.test.apollo.testapollo.config.RefreshConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +28,13 @@ public class TestController {
     RefreshConfig refreshConfig;
 
     @GetMapping("/test")
+    @LogHandle
     public String test() {
         return "打印配置中心的 dateValue 值: "+ dateValue;
     }
 
     @GetMapping("/user")
+    @LogHandle("获取用户")
     public String user() {
         return "name:"+appConfig.getName()+",id:"+appConfig.getId();
     }
@@ -44,12 +47,14 @@ public class TestController {
 
     @GetMapping("/user/map")
     @ResponseBody
+    @LogHandle(value = "配置map", type = LogHandle.Type.INPUT)
     public Map userMap() {
         Map<String, String> maps = appConfig.getMaps();
         return maps;
     }
 
     @GetMapping("/refreshConfig")
+    @LogHandle(value = "刷新配置", type = LogHandle.Type.OUTPUT)
     public String refreshConfig() {
         return refreshConfig.getRefresh();
     }
