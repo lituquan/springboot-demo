@@ -1,6 +1,7 @@
 package com.test.apollo.testapollo.aspect;
 
 import com.insnail.base.common.util.Json;
+import com.test.apollo.testapollo.annotation.Ignore;
 import com.test.apollo.testapollo.annotation.LogHandle;
 import com.test.apollo.testapollo.annotation.LogHandle.Type;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,6 +11,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Aspect
+@Component
 public class LogHandleAspect {
     private static final Map<String, Logger> loggerMap = new ConcurrentHashMap<>();
 
@@ -36,7 +39,8 @@ public class LogHandleAspect {
         }
     };
 
-    @Pointcut("(@annotation(com.test.apollo.testapollo.annotation.LogHandle) || @within(com.test.apollo.testapollo.annotation.LogHandle))")
+    @Pointcut("(@annotation(com.test.apollo.testapollo.annotation.LogHandle) || @within(com.test.apollo.testapollo.annotation.LogHandle))" +
+            "&& !@annotation(com.test.apollo.testapollo.annotation.Ignore) && !@within(com.test.apollo.testapollo.annotation.Ignore)")
     public void pointcut() {
     }
 
@@ -82,7 +86,6 @@ public class LogHandleAspect {
         return loggerMap.computeIfAbsent(clazz.getName(), k -> LoggerFactory.getLogger(clazz));
     }
 
-
     private boolean isPrintable(Object obj) {
         return isPrintable(obj, null);
     }
@@ -93,6 +96,9 @@ public class LogHandleAspect {
         Class<?> aClass = obj.getClass();
         if (Objects.nonNull(annotations)) {
             for (Annotation annotation : annotations) {
+                if (annotation instanceof Ignore) {
+                    return false;
+                }
                 if (annotation instanceof LogHandle) {
                     return true;
                 }
