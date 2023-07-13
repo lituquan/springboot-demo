@@ -3,9 +3,44 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 此处与接口类地址对应 -->
-<mapper namespace="com.example.demo.mapper.UserXmlMapper">
+<mapper namespace="com.example.demo.mapper.UserMapper">
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into user(`name`,age) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.name},#{item.age})
+        </foreach>
+    </insert>
+    <!--    <update id="batchUpdate">-->
+    <!--        <foreach item="item" index="index" collection="list" separator=";">-->
+    <!--            update user set age=#{item.age} where id=#{item.id}-->
+    <!--        </foreach>-->
+    <!--    </update>-->
+    <update id="batchUpdate" parameterType="java.util.List">
+        update user
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="age=case" suffix="end,">
+                <foreach collection="list" item="i" index="index">
+                    when id=#{i.id} then #{i.age}
+                </foreach>
+            </trim>
+        </trim>
+        where
+        <foreach collection="list" separator="or" item="i" index="index">
+            id = #{i.id}
+        </foreach>
+    </update>
+
     <!-- 此处与接口方法名对应 指定参数类型与返回结果类型-->
     <select id="getUserById" parameterType="java.lang.Integer" resultType="com.example.demo.entity.User">
         select * from user where id = #{id}
+    </select>
+    <select id="selectAllId" resultType="java.lang.Integer">
+        select id from user
+    </select>
+    <select id="getUserByIdIn" resultType="com.example.demo.entity.User">
+        select * from user where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 </mapper>
