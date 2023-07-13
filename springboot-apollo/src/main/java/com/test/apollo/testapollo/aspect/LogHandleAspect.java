@@ -1,6 +1,6 @@
 package com.test.apollo.testapollo.aspect;
 
-import com.insnail.base.common.util.Json;
+import cn.hutool.json.JSONUtil;
 import com.test.apollo.testapollo.annotation.Ignore;
 import com.test.apollo.testapollo.annotation.LogHandle;
 import com.test.apollo.testapollo.annotation.LogHandle.Type;
@@ -109,14 +109,13 @@ public class LogHandleAspect {
         if (Objects.isNull(aPackage))
             return false;
         String name = aPackage.getName();
-        return name.startsWith("com.insnail")
-                || name.startsWith("java.lang")
+        return name.startsWith("java.lang")
                 || name.startsWith("java.util");
     }
 
     private void logInput(Logger log, String signature, long start, Map<String, Object> map) {
         try {
-            log.info("{}|{} input: {}", signature, start, Json.stringify(map));
+            log.info("{}|{} input: {}", signature, start, JSONUtil.toJsonStr(map));
         } catch (Exception e) {
             log.warn("{}|{} input log failed, reason: {}", signature, start, e.getMessage());
         }
@@ -126,7 +125,7 @@ public class LogHandleAspect {
         long end = System.currentTimeMillis();
         long spend = end - start;
         try {
-            log.info("{}|{} [{}ms] output: {}", signature, start, spend, isPrintable(object) ? Json.stringify(object) : null);
+            log.info("{}|{} [{}ms] output: {}", signature, start, spend, isPrintable(object) ? JSONUtil.toJsonStr(object) : null);
         } catch (Exception e) {
             log.warn("{}|{} [{}ms] output log failed, reason: {}", signature, start, spend, e.getMessage());
         }
